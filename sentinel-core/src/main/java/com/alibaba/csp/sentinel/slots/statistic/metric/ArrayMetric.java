@@ -33,8 +33,14 @@ public class ArrayMetric implements Metric {
 
     private final MetricsLeapArray data;
 
-    public ArrayMetric(int windowLength, int interval) {
-        this.data = new MetricsLeapArray(windowLength, interval);
+    /**
+     * Constructor
+     *
+     * @param windowLengthInMs a single window bucket's time length in milliseconds.
+     * @param intervalInSec    the total time span of this {@link ArrayMetric} in seconds.
+     */
+    public ArrayMetric(int windowLengthInMs, int intervalInSec) {
+        this.data = new MetricsLeapArray(windowLengthInMs, intervalInSec);
     }
 
     /**
@@ -138,9 +144,9 @@ public class ArrayMetric implements Metric {
                 continue;
             }
             MetricNode node = new MetricNode();
-            node.setBlockedQps(window.value().block());
-            node.setException(window.value().exception());
-            node.setPassedQps(window.value().pass());
+            node.setBlockQps(window.value().block());
+            node.setExceptionQps(window.value().exception());
+            node.setPassQps(window.value().pass());
             long passQps = window.value().success();
             node.setSuccessQps(passQps);
             if (passQps != 0) {

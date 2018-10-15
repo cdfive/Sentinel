@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.taobao.csp.sentinel.dashboard.datasource.entity;
+package com.alibaba.csp.sentinel.adapter.servlet.callback;
 
-import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author leyou
+ * The origin parser parses request origin (e.g. IP, user, appName) from HTTP request.
+ *
+ * @author Eric Zhao
+ * @since 0.2.0
  */
-public interface RuleEntity {
+public interface RequestOriginParser {
 
-    Long getId();
-
-    void setId(Long id);
-
-    String getApp();
-
-    String getIp();
-
-    Integer getPort();
-
-    Date getGmtCreate();
+    /**
+     * Parse the origin from given HTTP request.
+     *
+     * @param request HTTP request
+     * @return parsed origin
+     */
+    String parseOrigin(HttpServletRequest request);
 }

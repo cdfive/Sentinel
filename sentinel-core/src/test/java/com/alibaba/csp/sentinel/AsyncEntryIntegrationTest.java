@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import com.alibaba.csp.sentinel.context.ContextTestUtil;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.node.DefaultNode;
-import com.alibaba.csp.sentinel.node.EntranceNode;
 import com.alibaba.csp.sentinel.node.Node;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 
@@ -41,10 +41,7 @@ public class AsyncEntryIntegrationTest {
 
     @Before
     public void clearContext() {
-        if (ContextUtil.getContext() != null) {
-            ContextUtil.getContext().setCurEntry(null);
-            ContextUtil.exit();
-        }
+        ContextTestUtil.cleanUpContext();
     }
 
     private final ExecutorService pool = Executors.newFixedThreadPool(10);
@@ -178,20 +175,44 @@ public class AsyncEntryIntegrationTest {
             ContextUtil.exit();
         }
 
-        TimeUnit.SECONDS.sleep(10);
-        testTreeCorrect();
+        TimeUnit.SECONDS.sleep(15);
+
+        testInvocationTreeCorrect();
     }
 
-    private void testTreeCorrect() {
+    private void testInvocationTreeCorrect() {
         DefaultNode root = Constants.ROOT;
-        Set<Node> childListForRoot = root.getChildList();
-        // TODO: check child tree
+        DefaultNode entranceNode = shouldHasChildFor(root, contextName);
+        DefaultNode testTopNode = shouldHasChildFor(entranceNode, "test-top");
+        DefaultNode testAsyncNode = shouldHasChildFor(testTopNode, "test-async");
+        shouldHasChildFor(testTopNode, "test-sync");
+        shouldHasChildFor(testAsyncNode, "test-sync-in-async");
+        DefaultNode anotherAsyncInAsyncNode = shouldHasChildFor(testAsyncNode, "test-another-async");
+        shouldHasChildFor(anotherAsyncInAsyncNode, "test-another-in-async");
+    }
+
+    private DefaultNode shouldHasChildFor(DefaultNode root, String resourceName) {
+        Set<Node> nodeSet = root.getChildList();
+        if (nodeSet == null || nodeSet.isEmpty()) {
+            fail("Child nodes should not be empty: " + root.getId().getName());
+        }
+        for (Node node : nodeSet) {
+            if (node instanceof DefaultNode) {
+                DefaultNode dn = (DefaultNode)node;
+                if (dn.getId().getName().equals(resourceName)) {
+                    return dn;
+                }
+            }
+        }
+        fail(String.format("The given node <%s> does not have child for resource <%s>",
+            root.getId().getName(), resourceName));
+        return null;
     }
 
     @After
     public void shutdown() {
         pool.shutdownNow();
-        ContextUtil.exit();
+        ContextTestUtil.cleanUpContext();
     }
 
     private void runAsync(Runnable f) {

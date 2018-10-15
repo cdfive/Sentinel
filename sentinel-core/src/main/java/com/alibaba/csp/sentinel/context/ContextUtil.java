@@ -23,6 +23,7 @@ import com.alibaba.csp.sentinel.Constants;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphO;
 import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.log.RecordLog;
 import com.alibaba.csp.sentinel.node.DefaultNode;
 import com.alibaba.csp.sentinel.node.EntranceNode;
 import com.alibaba.csp.sentinel.node.Node;
@@ -49,12 +50,35 @@ public class ContextUtil {
     private static ThreadLocal<Context> contextHolder = new ThreadLocal<Context>();
 
     /**
-     * Holds all {@link EntranceNode}
+     * Holds all {@link EntranceNode}.
      */
     private static volatile Map<String, DefaultNode> contextNameNodeMap = new HashMap<String, DefaultNode>();
 
     private static final ReentrantLock LOCK = new ReentrantLock();
     private static final Context NULL_CONTEXT = new NullContext();
+
+    static {
+        // Cache the entrance node for default context.
+        initDefaultContext();
+    }
+
+    private static void initDefaultContext() {
+        String defaultContextName = Constants.CONTEXT_DEFAULT_NAME;
+        EntranceNode node = new EntranceNode(new StringResourceWrapper(defaultContextName, EntryType.IN), null);
+        Constants.ROOT.addChild(node);
+        contextNameNodeMap.put(defaultContextName, node);
+    }
+
+    /**
+     * Not thread-safe, only for test.
+     */
+    static void resetContextMap() {
+        if (contextNameNodeMap != null) {
+            RecordLog.warn("Context map cleared and reset to initial state");
+            contextNameNodeMap.clear();
+            initDefaultContext();
+        }
+    }
 
     /**
      * <p>
@@ -99,6 +123,7 @@ public class ContextUtil {
             DefaultNode node = localCacheNameMap.get(name);
             if (node == null) {
                 if (localCacheNameMap.size() > Constants.MAX_CONTEXT_NAME_SIZE) {
+                    setNullContext();
                     return NULL_CONTEXT;
                 } else {
                     try {
@@ -106,6 +131,7 @@ public class ContextUtil {
                         node = contextNameNodeMap.get(name);
                         if (node == null) {
                             if (contextNameNodeMap.size() > Constants.MAX_CONTEXT_NAME_SIZE) {
+                                setNullContext();
                                 return NULL_CONTEXT;
                             } else {
                                 node = new EntranceNode(new StringResourceWrapper(name, EntryType.IN), null);
@@ -130,6 +156,18 @@ public class ContextUtil {
         }
 
         return context;
+    }
+
+    private static boolean shouldWarn = true;
+
+    private static void setNullContext() {
+        contextHolder.set(NULL_CONTEXT);
+        // Don't need to be thread-safe.
+        if (shouldWarn) {
+            RecordLog.warn("[SentinelStatusChecker] WARN: Amount of context exceeds the threshold "
+                + Constants.MAX_CONTEXT_NAME_SIZE + ". Entries in new contexts will NOT take effect!");
+            shouldWarn = false;
+        }
     }
 
     /**
@@ -164,6 +202,30 @@ public class ContextUtil {
         if (context != null && context.getCurEntry() == null) {
             contextHolder.set(null);
         }
+    }
+
+    /**
+     * Get current size of context entrance node map.
+     *
+     * @return current size of context entrance node map
+     * @since 0.2.0
+     */
+    public static int contextSize() {
+        return contextNameNodeMap.size();
+    }
+
+    /**
+     * Check if provided context is a default auto-created context.
+     *
+     * @param context context to check
+     * @return true if it is a default context, otherwise false
+     * @since 0.2.0
+     */
+    public static boolean isDefaultContext(Context context) {
+        if (context == null) {
+            return false;
+        }
+        return Constants.CONTEXT_DEFAULT_NAME.equals(context.getName());
     }
 
     /**
