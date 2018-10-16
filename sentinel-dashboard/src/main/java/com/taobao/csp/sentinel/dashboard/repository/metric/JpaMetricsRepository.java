@@ -114,10 +114,10 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
             String resource = metricEntity.getResource();
             if (resourceCount.containsKey(resource)) {
                 MetricEntity oldEntity = resourceCount.get(resource);
-                oldEntity.addPassedQps(metricEntity.getPassedQps());
+                oldEntity.addPassQps(metricEntity.getPassQps());
                 oldEntity.addRtAndSuccessQps(metricEntity.getRt(), metricEntity.getSuccessQps());
-                oldEntity.addBlockedQps(metricEntity.getBlockedQps());
-                oldEntity.addException(metricEntity.getException());
+                oldEntity.addBlockQps(metricEntity.getBlockQps());
+                oldEntity.addExceptionQps(metricEntity.getExceptionQps());
                 oldEntity.addCount(1);
             } else {
                 resourceCount.put(resource, MetricEntity.copyOf(metricEntity));
@@ -130,11 +130,11 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
                 .sorted((o1, o2) -> {
                     MetricEntity e1 = o1.getValue();
                     MetricEntity e2 = o2.getValue();
-                    int t = e2.getBlockedQps().compareTo(e1.getBlockedQps());
+                    int t = e2.getBlockQps().compareTo(e1.getBlockQps());
                     if (t != 0) {
                         return t;
                     }
-                    return e2.getPassedQps().compareTo(e1.getPassedQps());
+                    return e2.getPassQps().compareTo(e1.getPassQps());
                 })
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());

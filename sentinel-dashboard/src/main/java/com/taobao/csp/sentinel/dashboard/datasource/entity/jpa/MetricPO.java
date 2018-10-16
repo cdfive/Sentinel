@@ -41,20 +41,20 @@ public class MetricPO implements Serializable {
     private String resource;
 
     /**通过qps*/
-    @Column(name = "passed_qps")
-    private Long passedQps;
+    @Column(name = "pass_qps")
+    private Long passQps;
 
     /**成功qps*/
     @Column(name = "success_qps")
     private Long successQps;
 
     /**限流qps*/
-    @Column(name = "blocked_qps")
-    private Long blockedQps;
+    @Column(name = "block_qps")
+    private Long blockQps;
 
     /**发送异常的次数*/
-    @Column(name = "exception")
-    private Long exception;
+    @Column(name = "exception_qps")
+    private Long exceptionQps;
 
     /**所有successQps的rt的和*/
     @Column(name = "rt")
@@ -66,7 +66,7 @@ public class MetricPO implements Serializable {
 
     /**资源的hashCode*/
     @Column(name = "resource_code")
-    private String resourceCode;
+    private Integer resourceCode;
 
     public Long getId() {
         return id;
@@ -116,12 +116,12 @@ public class MetricPO implements Serializable {
         this.resource = resource;
     }
 
-    public Long getPassedQps() {
-        return passedQps;
+    public Long getPassQps() {
+        return passQps;
     }
 
-    public void setPassedQps(Long passedQps) {
-        this.passedQps = passedQps;
+    public void setPassQps(Long passQps) {
+        this.passQps = passQps;
     }
 
     public Long getSuccessQps() {
@@ -132,20 +132,20 @@ public class MetricPO implements Serializable {
         this.successQps = successQps;
     }
 
-    public Long getBlockedQps() {
-        return blockedQps;
+    public Long getBlockQps() {
+        return blockQps;
     }
 
-    public void setBlockedQps(Long blockedQps) {
-        this.blockedQps = blockedQps;
+    public void setBlockQps(Long blockQps) {
+        this.blockQps = blockQps;
     }
 
-    public Long getException() {
-        return exception;
+    public Long getExceptionQps() {
+        return exceptionQps;
     }
 
-    public void setException(Long exception) {
-        this.exception = exception;
+    public void setExceptionQps(Long exceptionQps) {
+        this.exceptionQps = exceptionQps;
     }
 
     public Double getRt() {
@@ -164,11 +164,11 @@ public class MetricPO implements Serializable {
         this.count = count;
     }
 
-    public String getResourceCode() {
+    public Integer getResourceCode() {
         return resourceCode;
     }
 
-    public void setResourceCode(String resourceCode) {
+    public void setResourceCode(Integer resourceCode) {
         this.resourceCode = resourceCode;
     }
 }
