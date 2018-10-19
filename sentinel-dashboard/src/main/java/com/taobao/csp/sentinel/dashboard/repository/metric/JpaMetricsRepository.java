@@ -6,6 +6,7 @@ import com.taobao.csp.sentinel.dashboard.datasource.entity.jpa.MetricPO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
  * @date 2018-09-17
  */
 @Transactional
-@Repository("jpaMetricsRepository")
+//@Repository("jpaMetricsRepository")
 public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @PersistenceContext
@@ -27,6 +28,14 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @Override
     public void save(MetricEntity metric) {
+        if (metric == null || StringUtil.isBlank(metric.getApp())) {
+            return;
+        }
+
+        if (metric.getId() == null) {
+            metric.setId(System.currentTimeMillis());
+        }
+
         MetricPO metricPO = new MetricPO();
         BeanUtils.copyProperties(metric, metricPO);
         em.persist(metricPO);
@@ -34,6 +43,10 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @Override
     public void saveAll(Iterable<MetricEntity> metrics) {
+        if (metrics == null) {
+            return;
+        }
+
         for (MetricEntity metric : metrics) {
             MetricPO metricPO = new MetricPO();
             BeanUtils.copyProperties(metric, metricPO);
@@ -53,11 +66,11 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
         }
 
         StringBuilder hql = new StringBuilder();
-        hql.append("from MetricPO");
-        hql.append(" where app=:app");
-        hql.append(" and resource=:resource");
-        hql.append(" and timestamp>=:startTime");
-        hql.append(" and timestamp<=:endTime");
+        hql.append("FROM MetricPO");
+        hql.append(" WHERE app=:app");
+        hql.append(" AND resource=:resource");
+        hql.append(" AND timestamp>=:startTime");
+        hql.append(" AND timestamp<=:endTime");
 
         Query query = em.createQuery(hql.toString());
         query.setParameter("app", app);
@@ -66,7 +79,7 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
         query.setParameter("endTime", Date.from(Instant.ofEpochMilli(endTime)));
 
         List<MetricPO> metricPOs = query.getResultList();
-        if (metricPOs == null || metricPOs.isEmpty()) {
+        if (CollectionUtils.isEmpty(metricPOs)) {
             return results;
         }
 
@@ -87,9 +100,9 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
         }
 
         StringBuilder hql = new StringBuilder();
-        hql.append("from MetricPO");
-        hql.append(" where app=:app");
-        hql.append(" and timestamp>=:startTime");
+        hql.append("FROM MetricPO");
+        hql.append(" WHERE app=:app");
+        hql.append(" AND timestamp>=:startTime");
 
         long startTime = System.currentTimeMillis() - 1000 * 60;
         Query query = em.createQuery(hql.toString());
@@ -97,7 +110,7 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
         query.setParameter("startTime", Date.from(Instant.ofEpochMilli(startTime)));
 
         List<MetricPO> metricPOs = query.getResultList();
-        if (metricPOs == null || metricPOs.isEmpty()) {
+        if (CollectionUtils.isEmpty(metricPOs)) {
             return results;
         }
 
