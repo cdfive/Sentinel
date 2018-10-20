@@ -1,6 +1,7 @@
 package com.taobao.csp.sentinel.dashboard.repository.metric;
 
 import com.taobao.csp.sentinel.dashboard.datasource.entity.MetricEntity;
+import com.taobao.csp.sentinel.dashboard.util.InfluxDBUtils;
 import org.junit.Test;
 
 import java.util.Date;
@@ -15,6 +16,11 @@ public class InfluxDBMetricsRepositoryTest {
 
     @Test
     public void test() {
+        String url = "http://localhost:8086";
+        String username = "admin";
+        String password = "123456";
+        InfluxDBUtils.init(url, username, password);
+
         MetricEntity metric = new MetricEntity();
         metric.setId(1L);
         metric.setGmtCreate(new Date());

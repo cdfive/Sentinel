@@ -1,8 +1,11 @@
 package com.taobao.csp.sentinel.dashboard.util;
 
 import com.taobao.csp.sentinel.dashboard.datasource.entity.influxdb.MetricPO;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Test;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,7 @@ public class InfluxDBUtilsTest {
         InfluxDBUtils.init(url, username, password);
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM metric");
+        sql.append("SELECT * FROM sentinel_metric");
         sql.append(" WHERE app=$app");
         sql.append(" AND time>=$startTime");
 
@@ -52,7 +55,14 @@ public class InfluxDBUtilsTest {
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("app", "sentinel-dashboard");
-        paramMap.put("startTime", "2018-10-19");
+//        paramMap.put("startTime", "2018-10-20 14:17:18.678");
+
+//        org.influxdb.InfluxDBMapperException: InfluxDB returned an error with Series: invalid operation: time and *influxql.StringLiteral are not compatible
+//        paramMap.put("startTime", new Date());
+
+//        paramMap.put("startTime", System.currentTimeMillis() - 600000);
+
+//        paramMap.put("startTime", DateUtils.addMinutes(new Date(), -10).getTime());
 
         List<MetricPO> metricPOS = InfluxDBUtils.queryList("sentinel_db", sql.toString(), paramMap, MetricPO.class);
         System.out.println(metricPOS.size());

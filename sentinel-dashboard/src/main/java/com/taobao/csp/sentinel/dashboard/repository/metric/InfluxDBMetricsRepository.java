@@ -28,7 +28,6 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
 
     private static final String METRIC_MEASUREMENT = "sentinel_metric";
 
-
     @Override
     public void save(MetricEntity metric) {
         if (metric == null || StringUtil.isBlank(metric.getApp())) {
@@ -83,7 +82,7 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM metric");
+        sql.append("SELECT * FROM " + METRIC_MEASUREMENT);
         sql.append(" WHERE app=$app");
         sql.append(" AND resource=$resource");
         sql.append(" AND time>=$startTime");
@@ -116,7 +115,7 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
         }
 
         StringBuilder sql = new StringBuilder();
-        sql.append("SELECT * FROM metric");
+        sql.append("SELECT * FROM " + METRIC_MEASUREMENT);
         sql.append(" WHERE app=$app");
         sql.append(" AND time>=$startTime");
 
@@ -124,7 +123,6 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
         long startTime = System.currentTimeMillis() - 1000 * 60;
         paramMap.put("app", app);
         paramMap.put("startTime", DateFormatUtils.format(new Date(startTime), DATE_FORMAT_PATTERN));
-
 
         List<MetricPO> metricPOS = InfluxDBUtils.queryList(SENTINEL_DATABASE, sql.toString(), paramMap, MetricPO.class);
 

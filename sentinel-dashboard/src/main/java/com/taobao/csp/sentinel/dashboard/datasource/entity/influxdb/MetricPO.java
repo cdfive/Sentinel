@@ -9,7 +9,7 @@ import java.time.Instant;
  * @author cdfive
  * @date 2018-10-19
  */
-@Measurement(name = "metric")
+@Measurement(name = "sentinel_metric")
 public class MetricPO {
 
     @Column(name = "time")
