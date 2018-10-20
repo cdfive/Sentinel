@@ -55,7 +55,7 @@ public class InfluxDBUtilsTest {
 
         Map<String, Object> paramMap = new HashMap<String, Object>();
         paramMap.put("app", "sentinel-dashboard");
-//        paramMap.put("startTime", "2018-10-20 14:17:18.678");
+        paramMap.put("startTime", "2018-10-20 14:11:18.678");
 
 //        org.influxdb.InfluxDBMapperException: InfluxDB returned an error with Series: invalid operation: time and *influxql.StringLiteral are not compatible
 //        paramMap.put("startTime", new Date());
