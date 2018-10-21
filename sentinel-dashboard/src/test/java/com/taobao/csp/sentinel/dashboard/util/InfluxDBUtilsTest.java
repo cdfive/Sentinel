@@ -80,6 +80,7 @@ public class InfluxDBUtilsTest {
 
     @Test
     public void insert() throws Exception {
+
         InfluxDB influxDB = InfluxDBFactory.connect("http://localhost:8086");
         influxDB.setDatabase("sentinel_db");
 
