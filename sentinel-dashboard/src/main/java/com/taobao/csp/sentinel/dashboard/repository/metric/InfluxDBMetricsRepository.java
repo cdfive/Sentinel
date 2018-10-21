@@ -43,9 +43,9 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
                 public void doCallBack(String database, InfluxDB influxDB) {
                     influxDB.write(Point.measurement(METRIC_MEASUREMENT)
                             .time(DateUtils.addHours(metric.getTimestamp(), 8).getTime(), TimeUnit.MILLISECONDS)
-                            .tag("id", String.valueOf(metric.getId()))
                             .tag("app", metric.getApp())
                             .tag("resource", metric.getResource())
+                            .addField("id", metric.getId())
                             .addField("gmtCreate", metric.getGmtCreate().getTime())
                             .addField("gmtModified", metric.getGmtModified().getTime())
                             .addField("passQps", metric.getPassQps())
@@ -170,7 +170,7 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
     private MetricEntity convertToMetricEntity(MetricPO metricPO) {
         MetricEntity metricEntity = new MetricEntity();
 
-        metricEntity.setId(Long.valueOf(metricPO.getId()));
+        metricEntity.setId(metricPO.getId());
         metricEntity.setGmtCreate(new Date(metricPO.getGmtCreate()));
         metricEntity.setGmtModified(new Date(metricPO.getGmtModified()));
         metricEntity.setApp(metricPO.getApp());

@@ -15,8 +15,8 @@ public class MetricPO {
     @Column(name = "time")
     private Instant time;
 
-    @Column(name = "id", tag = true)
-    private String id;
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "gmtCreate")
     private Long gmtCreate;
@@ -59,11 +59,11 @@ public class MetricPO {
         this.time = time;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
