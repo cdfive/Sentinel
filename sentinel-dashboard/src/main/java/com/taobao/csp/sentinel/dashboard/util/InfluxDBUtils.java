@@ -48,6 +48,17 @@ public class InfluxDBUtils {
         InfluxDBUtils.password = password;
     }
 
+    public static <T> T process(String database, InfluxDBCallback callback) {
+        InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
+        influxDB.setDatabase(database);
+
+        T t = callback.doCallBack(database, influxDB);
+
+        influxDB.close();
+
+        return t;
+    }
+
     public static void insert(String database, InfluxDBInsertCallback influxDBInsertCallback) {
         process(database, new InfluxDBCallback() {
             @Override
@@ -88,17 +99,6 @@ public class InfluxDBUtils {
         });
 
         return resultMapper.toPOJO(queryResult, clasz);
-    }
-
-    private static <T> T process(String database, InfluxDBCallback callback) {
-        InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
-        influxDB.setDatabase(database);
-
-        T t = callback.doCallBack(database, influxDB);
-
-        influxDB.close();
-
-        return t;
     }
 
     public interface InfluxDBCallback {
