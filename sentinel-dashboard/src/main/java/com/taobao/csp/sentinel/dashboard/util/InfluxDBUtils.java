@@ -27,17 +27,17 @@ public class InfluxDBUtils {
 
     private static InfluxDBResultMapper resultMapper = new InfluxDBResultMapper();
 
-    @Value("${influxdb.url}")
+//    @Value("${influxdb.url}")
     public void setUrl(String url) {
         InfluxDBUtils.url = url;
     }
 
-    @Value("${influxdb.username}")
+//    @Value("${influxdb.username}")
     public void setUsername(String username) {
         InfluxDBUtils.username = username;
     }
 
-    @Value("${influxdb.password}")
+//    @Value("${influxdb.password}")
     public void setPassword(String password) {
         InfluxDBUtils.password = password;
     }

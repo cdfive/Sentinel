@@ -78,7 +78,7 @@ public class MetricFetcher {
 
     private Map<String, AtomicLong> appLastFetchTime = new ConcurrentHashMap<>();
 
-    @Qualifier("influxDBMetricsRepository")
+    @Qualifier("jpaMetricsRepository")
     @Autowired
     private MetricsRepository<MetricEntity> metricStore;
     @Autowired

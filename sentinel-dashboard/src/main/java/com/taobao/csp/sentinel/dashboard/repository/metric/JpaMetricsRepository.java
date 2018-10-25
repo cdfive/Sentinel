@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @date 2018-09-17
  */
 @Transactional
-//@Repository("jpaMetricsRepository")
+@Repository("jpaMetricsRepository")
 public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @PersistenceContext

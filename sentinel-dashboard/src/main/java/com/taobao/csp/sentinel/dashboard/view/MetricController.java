@@ -50,7 +50,7 @@ public class MetricController {
 
     private static final long maxQueryIntervalMs = 1000 * 60 * 60;
 
-    @Qualifier("influxDBMetricsRepository")
+    @Qualifier("jpaMetricsRepository")
     @Autowired
     private MetricsRepository<MetricEntity> metricStore;
 
