@@ -5,6 +5,8 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BoundParameterQuery;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.impl.InfluxDBResultMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +20,8 @@ import java.util.Set;
  */
 @Component
 public class InfluxDBUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(InfluxDBUtils.class);
 
     private static String url;
 
@@ -49,12 +53,24 @@ public class InfluxDBUtils {
     }
 
     public static <T> T process(String database, InfluxDBCallback callback) {
-        InfluxDB influxDB = InfluxDBFactory.connect(url, username, password);
-        influxDB.setDatabase(database);
+        InfluxDB influxDB = null;
+        T t = null;
+        try {
+            influxDB = InfluxDBFactory.connect(url, username, password);
+            influxDB.setDatabase(database);
 
-        T t = callback.doCallBack(database, influxDB);
-
-        influxDB.close();
+            t = callback.doCallBack(database, influxDB);
+        } catch (Exception e) {
+            logger.error("[process exception]", e);
+        } finally {
+            if (influxDB != null) {
+                try {
+                    influxDB.close();
+                } catch (Exception e) {
+                    logger.error("[influxDB.close exception]", e);
+                }
+            }
+        }
 
         return t;
     }
