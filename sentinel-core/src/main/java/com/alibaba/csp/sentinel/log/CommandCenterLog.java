@@ -25,25 +25,26 @@ import java.util.logging.Logger;
 public class CommandCenterLog extends LogBase {
 
     private static final Logger heliumRecordLog = Logger.getLogger("cspCommandCenterLog");
-    private static final String FILE_NAME = "commandCenter.log";
+    private static final String FILE_NAME = "command-center.log";
     private static Handler logHandler = null;
 
     static {
         logHandler = makeLogger(FILE_NAME, heliumRecordLog);
     }
 
-    public static void info(String msg) {
-        LoggerUtils.disableOtherHandlers(heliumRecordLog, logHandler);
-        heliumRecordLog.log(Level.INFO, msg);
+    public static void info(String detail, Object... params) {
+        log(heliumRecordLog, logHandler, Level.INFO, detail, params);
     }
 
-    public static void info(String msg, Throwable e) {
-        LoggerUtils.disableOtherHandlers(heliumRecordLog, logHandler);
-        heliumRecordLog.log(Level.INFO, msg, e);
+    public static void info(String detail, Throwable e) {
+        log(heliumRecordLog, logHandler, Level.INFO, detail, e);
     }
 
-    public static void warn(String msg, Throwable e) {
-        LoggerUtils.disableOtherHandlers(heliumRecordLog, logHandler);
-        heliumRecordLog.log(Level.WARNING, msg, e);
+    public static void warn(String detail, Object... params) {
+        log(heliumRecordLog, logHandler, Level.WARNING, detail, params);
+    }
+
+    public static void warn(String detail, Throwable e) {
+        log(heliumRecordLog, logHandler, Level.WARNING, detail, e);
     }
 }
