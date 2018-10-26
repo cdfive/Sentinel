@@ -262,4 +262,15 @@
         </profile>
     </profiles>
 
+    <distributionManagement>
+        <repository>
+            <id>winxuan-repository</id>
+            <url>http://maven.i.winxuan.com:8081/content/repositories/winxuan-repository/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://maven.i.winxuan.com:8081/content/repositories/snapshots</url>
+            <uniqueVersion>true</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
