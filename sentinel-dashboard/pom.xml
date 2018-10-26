@@ -198,37 +198,9 @@
                 </property>
             </activation>
             <properties>
-                <spring.datasource.url>jdbc:mysql://mysql.test.winxuan.io:55517/wx_sentinel</spring.datasource.url>
-                <spring.datasource.username>sent_test_all</spring.datasource.username>
-                <spring.datasource.password>43hg32tgregt23qg4323tr23t</spring.datasource.password>
-            </properties>
-        </profile>
-        <profile>
-            <id>beta</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>beta</value>
-                </property>
-            </activation>
-            <properties>
-                <spring.datasource.url>jdbc:mysql://10.100.12.122:33317/wx_sentinel</spring.datasource.url>
-                <spring.datasource.username>sent_test_all</spring.datasource.username>
-                <spring.datasource.password>4trg3w4tw4t23rt24yg23</spring.datasource.password>
-            </properties>
-        </profile>
-        <profile>
-            <id>pro</id>
-            <activation>
-                <property>
-                    <name>profile</name>
-                    <value>pro</value>
-                </property>
-            </activation>
-            <properties>
-                <spring.datasource.url>jdbc:mysql://10.1.2.15:33356/sentinel_db</spring.datasource.url>
-                <spring.datasource.username>st_online</spring.datasource.username>
-                <spring.datasource.password>45ge5y435634herg34534</spring.datasource.password>
+                <spring.datasource.url>jdbc:mysql://localhost:55517/sentinel_db</spring.datasource.url>
+                <spring.datasource.username>root</spring.datasource.username>
+                <spring.datasource.password>root</spring.datasource.password>
             </properties>
         </profile>
     </profiles>
