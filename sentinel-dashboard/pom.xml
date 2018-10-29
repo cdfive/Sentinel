@@ -226,7 +226,7 @@
                 </property>
             </activation>
             <properties>
-                <spring.datasource.url>jdbc:mysql://10.1.2.15:33356/sentinel_db</spring.datasource.url>
+                <spring.datasource.url>jdbc:mysql://10.1.2.15:33356/wx_sentinel</spring.datasource.url>
                 <spring.datasource.username>st_online</spring.datasource.username>
                 <spring.datasource.password>45ge5y435634herg34534</spring.datasource.password>
             </properties>
