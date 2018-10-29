@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  * @author cdfive
  * @date 2018-09-17
  */
-//@Transactional
-//@Repository("jpaMetricsRepository")
+@Transactional
+@Repository("jpaMetricsRepository")
 public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @PersistenceContext
