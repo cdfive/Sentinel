@@ -32,10 +32,6 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
             return;
         }
 
-        if (metric.getId() == null) {
-            metric.setId(System.currentTimeMillis());
-        }
-
         MetricPO metricPO = new MetricPO();
         BeanUtils.copyProperties(metric, metricPO);
         em.persist(metricPO);
@@ -47,11 +43,7 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
             return;
         }
 
-        for (MetricEntity metric : metrics) {
-            MetricPO metricPO = new MetricPO();
-            BeanUtils.copyProperties(metric, metricPO);
-            em.persist(metricPO);
-        }
+        metrics.forEach(this::save);
     }
 
     @Override
