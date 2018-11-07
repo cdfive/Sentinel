@@ -34,31 +34,15 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
             return;
         }
 
-        if (metric.getId() == null) {
-            metric.setId(System.currentTimeMillis());
-        }
-
         InfluxDBUtils.insert(SENTINEL_DATABASE, new InfluxDBUtils.InfluxDBInsertCallback() {
-                @Override
-                public void doCallBack(String database, InfluxDB influxDB) {
-                    influxDB.write(Point.measurement(METRIC_MEASUREMENT)
-                            .time(DateUtils.addHours(metric.getTimestamp(), 8).getTime(), TimeUnit.MILLISECONDS)
-                            .tag("app", metric.getApp())
-                            .tag("resource", metric.getResource())
-                            .addField("id", metric.getId())
-                            .addField("gmtCreate", metric.getGmtCreate().getTime())
-                            .addField("gmtModified", metric.getGmtModified().getTime())
-                            .addField("passQps", metric.getPassQps())
-                            .addField("successQps", metric.getSuccessQps())
-                            .addField("blockQps", metric.getBlockQps())
-                            .addField("exceptionQps", metric.getExceptionQps())
-                            .addField("rt", metric.getRt())
-                            .addField("count", metric.getCount())
-                            .addField("resourceCode", metric.getResourceCode())
-                            .build());
+            @Override
+            public void doCallBack(String database, InfluxDB influxDB) {
+                if (metric.getId() == null) {
+                    metric.setId(System.currentTimeMillis());
                 }
+                doSave(influxDB, metric);
             }
-        );
+        });
     }
 
     @Override
@@ -67,7 +51,24 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
             return;
         }
 
-        metrics.forEach(this::save);
+        Iterator<MetricEntity> iterator = metrics.iterator();
+        boolean next = iterator.hasNext();
+        if (!next) {
+            return;
+        }
+
+        InfluxDBUtils.insert(SENTINEL_DATABASE, new InfluxDBUtils.InfluxDBInsertCallback() {
+            @Override
+            public void doCallBack(String database, InfluxDB influxDB) {
+                while (iterator.hasNext()) {
+                    MetricEntity metric = iterator.next();
+                    if (metric.getId() == null) {
+                        metric.setId(System.currentTimeMillis());
+                    }
+                    doSave(influxDB, metric);
+                }
+            }
+        });
     }
 
     @Override
@@ -184,5 +185,23 @@ public class InfluxDBMetricsRepository implements MetricsRepository<MetricEntity
         metricEntity.setCount(metricPO.getCount());
 
         return metricEntity;
+    }
+
+    private void doSave(InfluxDB influxDB, MetricEntity metric) {
+        influxDB.write(Point.measurement(METRIC_MEASUREMENT)
+                .time(DateUtils.addHours(metric.getTimestamp(), 8).getTime(), TimeUnit.MILLISECONDS)
+                .tag("app", metric.getApp())
+                .tag("resource", metric.getResource())
+                .addField("id", metric.getId())
+                .addField("gmtCreate", metric.getGmtCreate().getTime())
+                .addField("gmtModified", metric.getGmtModified().getTime())
+                .addField("passQps", metric.getPassQps())
+                .addField("successQps", metric.getSuccessQps())
+                .addField("blockQps", metric.getBlockQps())
+                .addField("exceptionQps", metric.getExceptionQps())
+                .addField("rt", metric.getRt())
+                .addField("count", metric.getCount())
+                .addField("resourceCode", metric.getResourceCode())
+                .build());
     }
 }

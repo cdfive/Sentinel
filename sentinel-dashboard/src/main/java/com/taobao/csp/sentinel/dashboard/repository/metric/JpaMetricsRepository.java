@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
  * @author cdfive
  * @date 2018-09-17
  */
-//@Transactional
-//@Repository("jpaMetricsRepository")
+@Transactional
+@Repository("jpaMetricsRepository")
 public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
 
     @PersistenceContext
@@ -30,10 +30,6 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
     public void save(MetricEntity metric) {
         if (metric == null || StringUtil.isBlank(metric.getApp())) {
             return;
-        }
-
-        if (metric.getId() == null) {
-            metric.setId(System.currentTimeMillis());
         }
 
         MetricPO metricPO = new MetricPO();
@@ -47,11 +43,7 @@ public class JpaMetricsRepository implements MetricsRepository<MetricEntity> {
             return;
         }
 
-        for (MetricEntity metric : metrics) {
-            MetricPO metricPO = new MetricPO();
-            BeanUtils.copyProperties(metric, metricPO);
-            em.persist(metricPO);
-        }
+        metrics.forEach(this::save);
     }
 
     @Override
