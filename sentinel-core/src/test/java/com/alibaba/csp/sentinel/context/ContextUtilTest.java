@@ -129,6 +129,7 @@ public class ContextUtilTest {
         ContextUtil.exit();
 
         assertNotNull(ContextUtil.getContext());
+        assertSame(context, ContextUtil.getContext());
     }
 
     @Test
