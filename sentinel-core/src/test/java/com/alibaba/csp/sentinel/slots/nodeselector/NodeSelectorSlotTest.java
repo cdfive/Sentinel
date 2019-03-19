@@ -15,28 +15,88 @@
  */
 package com.alibaba.csp.sentinel.slots.nodeselector;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
 import com.alibaba.csp.sentinel.Constants;
+import com.alibaba.csp.sentinel.CtEntryTestUtil;
 import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.context.Context;
+import com.alibaba.csp.sentinel.context.ContextTestUtil;
 import com.alibaba.csp.sentinel.context.ContextUtil;
 import com.alibaba.csp.sentinel.node.DefaultNode;
 import com.alibaba.csp.sentinel.node.EntranceNode;
 import com.alibaba.csp.sentinel.node.Node;
+import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
+import com.alibaba.csp.sentinel.slotchain.StringResourceWrapper;
+import com.alibaba.csp.sentinel.slots.clusterbuilder.ClusterBuilderSlot;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.powermock.reflect.Whitebox;
+
+import java.util.HashMap;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author jialiang.linjl
  * @author Eric Zhao
+ * @author cdfive
  */
-public class NodeSelectorTest {
+public class NodeSelectorSlotTest {
+
+    @Before
+    public void setUp() {
+        ClusterBuilderSlot.getClusterNodeMap().clear();
+        ContextTestUtil.cleanUpContext();
+    }
+
+    @After
+    public void cleanUp() {
+        ClusterBuilderSlot.getClusterNodeMap().clear();
+        ContextTestUtil.cleanUpContext();
+    }
+
+    @Test
+    public void testFireEntry() throws Throwable {
+        NodeSelectorSlot slot = mock(NodeSelectorSlot.class);
+        Whitebox.setInternalState(slot, "map", new HashMap<>());
+
+        Context context = ContextUtil.enter("serviceA");
+        ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
+
+        Entry entry = mock(Entry.class);
+        context.setCurEntry(entry);
+        when(entry.getCurNode()).thenReturn(null);
+
+        doCallRealMethod().when(slot).entry(context, resourceWrapper, null, 1, false);
+        slot.entry(context, resourceWrapper, null, 1, false);
+
+        verify(slot).entry(context, resourceWrapper, null, 1, false);
+        // Verify fireEntry method has been called only once
+        // Use matchers here since the third parameter is a new defaultNode NodeSelectorSlot created
+        verify(slot).fireEntry(eq(context), eq(resourceWrapper), any(), eq(1), eq(false));
+        verifyNoMoreInteractions(slot);
+    }
+
+    @Test
+    public void testEntry() throws Throwable {
+        NodeSelectorSlot slot = new NodeSelectorSlot();
+
+        Context context = ContextUtil.enter("serviceA");
+        ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
+        // Set curEntry for context
+        CtEntryTestUtil.buildCtEntry(resourceWrapper, null, context);
+
+        assertNull(context.getCurNode());
+        assertEquals(0, ((DefaultNode) context.getLastNode()).getChildList().size());
+
+        slot.entry(context, resourceWrapper, null, 1, false);
+
+        assertNotNull(context.getCurNode());
+        assertEquals(1, ((DefaultNode) context.getLastNode()).getChildList().size());
+    }
 
     @Test
     public void testSingleEntrance() throws Exception {
