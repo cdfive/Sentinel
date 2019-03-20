@@ -59,18 +59,33 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode defaultNode = Env.nodeBuilder.buildTreeNode(resourceWrapper, null);
+        DefaultNode node = Env.nodeBuilder.buildTreeNode(resourceWrapper, null);
 
         Entry entry = mock(Entry.class);
         context.setCurEntry(entry);
-        when(entry.getCurNode()).thenReturn(defaultNode);
+        when(entry.getCurNode()).thenReturn(node);
 
-        doCallRealMethod().when(slot).entry(context, resourceWrapper, defaultNode, 1, false);
-        slot.entry(context, resourceWrapper, defaultNode, 1, false);
+        doCallRealMethod().when(slot).entry(context, resourceWrapper, node, 1, false);
+        slot.entry(context, resourceWrapper, node, 1, false);
 
-        verify(slot).entry(context, resourceWrapper, defaultNode, 1, false);
-        // Verify fireEntry method has been called only once
-        verify(slot).fireEntry(context, resourceWrapper, defaultNode, 1, false);
+        verify(slot).entry(context, resourceWrapper, node, 1, false);
+        // Verify fireEntry method has been called, and only once
+        verify(slot).fireEntry(context, resourceWrapper, node, 1, false);
+        verifyNoMoreInteractions(slot);
+    }
+
+    @Test
+    public void testFireExit() throws Throwable {
+        ClusterBuilderSlot slot = mock(ClusterBuilderSlot.class);
+        Context context = mock(Context.class);
+        ResourceWrapper resourceWrapper = mock(ResourceWrapper.class);
+
+        doCallRealMethod().when(slot).exit(context, resourceWrapper, 1);
+        slot.exit(context, resourceWrapper, 1);
+
+        verify(slot).exit(context, resourceWrapper, 1);
+        // Verify fireExit method has been called, and only once
+        verify(slot).fireExit(context, resourceWrapper, 1);
         verifyNoMoreInteractions(slot);
     }
 
@@ -87,8 +102,8 @@ public class ClusterBuilderSlotTest {
         assertEquals(1, ClusterBuilderSlot.getClusterNodeMap().size());
         ClusterNode clusterNode = ClusterBuilderSlot.getClusterNodeMap().get(resourceWrapper);
         assertNotNull(clusterNode);
-
         assertSame(clusterNode, defaultNode.getClusterNode());
+
         assertEquals(0, clusterNode.getOriginCountMap().size());
     }
 
