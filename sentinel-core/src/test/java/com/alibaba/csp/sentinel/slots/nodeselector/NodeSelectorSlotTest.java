@@ -28,7 +28,6 @@ import com.alibaba.csp.sentinel.node.EntranceNode;
 import com.alibaba.csp.sentinel.node.Node;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slotchain.StringResourceWrapper;
-import com.alibaba.csp.sentinel.slots.clusterbuilder.ClusterBuilderSlot;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,20 +47,18 @@ public class NodeSelectorSlotTest {
 
     @Before
     public void setUp() {
-        ClusterBuilderSlot.getClusterNodeMap().clear();
         ContextTestUtil.cleanUpContext();
     }
 
     @After
     public void cleanUp() {
-        ClusterBuilderSlot.getClusterNodeMap().clear();
         ContextTestUtil.cleanUpContext();
     }
 
     @Test
     public void testFireEntry() throws Throwable {
         NodeSelectorSlot slot = mock(NodeSelectorSlot.class);
-        // initialize the field in Mock Object to avoid NPE
+        // Initialize the field in Mock Object to avoid NPE
         Whitebox.setInternalState(slot, "map", new HashMap<>());
 
         Context context = ContextUtil.enter("serviceA");
@@ -75,9 +72,24 @@ public class NodeSelectorSlotTest {
         slot.entry(context, resourceWrapper, null, 1, false);
 
         verify(slot).entry(context, resourceWrapper, null, 1, false);
-        // Verify fireEntry method has been called only once
+        // Verify fireEntry method has been called, and only once
         // Use matchers here since the third parameter is a new defaultNode created in NodeSelectorSlot
         verify(slot).fireEntry(eq(context), eq(resourceWrapper), any(), eq(1), eq(false));
+        verifyNoMoreInteractions(slot);
+    }
+
+    @Test
+    public void testFireExit() throws Throwable {
+        NodeSelectorSlot slot = mock(NodeSelectorSlot.class);
+        Context context = mock(Context.class);
+        ResourceWrapper resourceWrapper = mock(ResourceWrapper.class);
+
+        doCallRealMethod().when(slot).exit(context, resourceWrapper, 1);
+        slot.exit(context, resourceWrapper, 1);
+
+        verify(slot).exit(context, resourceWrapper, 1);
+        // Verify fireExit method has been called, and only once
+        verify(slot).fireExit(context, resourceWrapper, 1);
         verifyNoMoreInteractions(slot);
     }
 
@@ -148,7 +160,7 @@ public class NodeSelectorSlotTest {
         ContextUtil.enter(contextName);
         Entry nodeA2 = SphU.entry(resName);
 
-        // Same resource, same context, since contextName is key, no new DefaultNode created, they are same
+        // Same resource, same context, since contextName is key, no new DefaultNode created
         assertSame(curNode, ContextUtil.getContext().getCurNode());
 
         // No new DefaultNode added to childList in entranceNode, the childListSize remain unchanged
@@ -246,7 +258,7 @@ public class NodeSelectorSlotTest {
         assertNull(ContextUtil.getContext().getCurEntry());
         ContextUtil.exit();
 
-        // After exit for node and context, the node structure still remains
+        // After exit by node and context, the node tree structure still remains
         for (Node node : Constants.ROOT.getChildList()) {
             EntranceNode entranceNode = (EntranceNode) node;
             if ("entry1".equals(entranceNode.getId().getName())) {
