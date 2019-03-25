@@ -156,7 +156,7 @@ public class NodeSelectorSlotTest {
 
         ContextUtil.exit();
 
-        // Entry same context and resource
+        // Same context and resource
         ContextUtil.enter(contextName);
         Entry nodeA2 = SphU.entry(resName);
 
