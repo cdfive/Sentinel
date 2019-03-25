@@ -18,7 +18,6 @@ package com.alibaba.csp.sentinel.slots.clusterbuilder;
 import com.alibaba.csp.sentinel.CtEntryTestUtil;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
-import com.alibaba.csp.sentinel.Env;
 import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.context.Context;
 import com.alibaba.csp.sentinel.context.ContextTestUtil;
@@ -95,14 +94,14 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode defaultNode = new DefaultNode(resourceWrapper, null);
+        DefaultNode node = new DefaultNode(resourceWrapper, null);
 
-        slot.entry(context, resourceWrapper, defaultNode, 1, false);
+        slot.entry(context, resourceWrapper, node, 1, false);
 
         assertEquals(1, ClusterBuilderSlot.getClusterNodeMap().size());
         ClusterNode clusterNode = ClusterBuilderSlot.getClusterNodeMap().get(resourceWrapper);
         assertNotNull(clusterNode);
-        assertSame(clusterNode, defaultNode.getClusterNode());
+        assertSame(clusterNode, node.getClusterNode());
 
         assertEquals(0, clusterNode.getOriginCountMap().size());
     }
@@ -113,16 +112,17 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA", "originA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode defaultNode = new DefaultNode(resourceWrapper, null);
+        DefaultNode node = new DefaultNode(resourceWrapper, null);
+
         // Set curEntry for context
         CtEntryTestUtil.buildCtEntry(resourceWrapper, null, context);
 
-        slot.entry(context, resourceWrapper, defaultNode, 1, false);
+        slot.entry(context, resourceWrapper, node, 1, false);
 
         assertEquals(1, ClusterBuilderSlot.getClusterNodeMap().size());
         ClusterNode clusterNode = ClusterBuilderSlot.getClusterNodeMap().get(resourceWrapper);
         assertNotNull(clusterNode);
-        assertSame(clusterNode, defaultNode.getClusterNode());
+        assertSame(clusterNode, node.getClusterNode());
 
         assertEquals(1, clusterNode.getOriginCountMap().size());
         assertTrue(clusterNode.getOriginCountMap().containsKey("originA"));
