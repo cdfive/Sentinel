@@ -18,7 +18,6 @@ package com.alibaba.csp.sentinel.slots.statistic;
 import com.alibaba.csp.sentinel.Constants;
 import com.alibaba.csp.sentinel.Entry;
 import com.alibaba.csp.sentinel.EntryType;
-import com.alibaba.csp.sentinel.Env;
 import com.alibaba.csp.sentinel.context.Context;
 import com.alibaba.csp.sentinel.context.ContextTestUtil;
 import com.alibaba.csp.sentinel.context.ContextUtil;
@@ -59,7 +58,7 @@ public class StatisticSlotTest {
 
         Context context = ContextUtil.enter("serviceA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode node = Env.nodeBuilder.buildTreeNode(resourceWrapper, Env.nodeBuilder.buildClusterNode());
+        DefaultNode node = new DefaultNode(resourceWrapper, new ClusterNode());
 
         Entry entry = mock(Entry.class);
         context.setCurEntry(entry);

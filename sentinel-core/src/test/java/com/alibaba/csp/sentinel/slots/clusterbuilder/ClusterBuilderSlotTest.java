@@ -59,7 +59,7 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode node = Env.nodeBuilder.buildTreeNode(resourceWrapper, null);
+        DefaultNode node = new DefaultNode(resourceWrapper, null);
 
         Entry entry = mock(Entry.class);
         context.setCurEntry(entry);
@@ -95,7 +95,7 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode defaultNode = Env.nodeBuilder.buildTreeNode(resourceWrapper, null);
+        DefaultNode defaultNode = new DefaultNode(resourceWrapper, null);
 
         slot.entry(context, resourceWrapper, defaultNode, 1, false);
 
@@ -113,7 +113,7 @@ public class ClusterBuilderSlotTest {
 
         Context context = ContextUtil.enter("serviceA", "originA");
         ResourceWrapper resourceWrapper = new StringResourceWrapper("nodeA", EntryType.IN);
-        DefaultNode defaultNode = Env.nodeBuilder.buildTreeNode(resourceWrapper, null);
+        DefaultNode defaultNode = new DefaultNode(resourceWrapper, null);
         // Set curEntry for context
         CtEntryTestUtil.buildCtEntry(resourceWrapper, null, context);
 
