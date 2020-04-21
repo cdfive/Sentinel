@@ -1,4 +1,4 @@
-package com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider;
+package com.alibaba.csp.sentinel.demo.apache.dubbo.provider2;
 
 /**
  * @author xiejihan

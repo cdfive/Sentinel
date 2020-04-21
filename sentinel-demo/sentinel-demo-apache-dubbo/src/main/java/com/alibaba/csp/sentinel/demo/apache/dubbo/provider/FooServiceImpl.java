@@ -16,7 +16,7 @@
 package com.alibaba.csp.sentinel.demo.apache.dubbo.provider;
 
 import com.alibaba.csp.sentinel.demo.apache.dubbo.FooService;
-import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider.AnotherService;
+import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.AnotherService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 

@@ -15,8 +15,7 @@
  */
 package com.alibaba.csp.sentinel.demo.apache.dubbo;
 
-import com.alibaba.csp.sentinel.demo.apache.dubbo.provider.ProviderConfiguration;
-import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider.ProviderConfiguration2;
+import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.ProviderConfiguration2;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
