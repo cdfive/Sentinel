@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.csp.sentinel.demo.apache.dubbo.provider;
+package com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider;
 
 import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.ConsumerConfig;
 import org.apache.dubbo.config.ProtocolConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
@@ -28,7 +27,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @DubboComponentScan
-public class ProviderConfiguration {
+public class ProviderConfiguration2 {
 
     @Bean
     public ApplicationConfig applicationConfig() {
@@ -48,15 +47,7 @@ public class ProviderConfiguration {
     public ProtocolConfig protocolConfig() {
         ProtocolConfig protocolConfig = new ProtocolConfig();
         protocolConfig.setName("dubbo");
-        protocolConfig.setPort(25758);
+        protocolConfig.setPort(25759);
         return protocolConfig;
-    }
-
-    @Bean
-    public ConsumerConfig consumerConfig() {
-        ConsumerConfig consumerConfig = new ConsumerConfig();
-        // Uncomment below line if you don't want to enable Sentinel for Dubbo service consumers.
-        // consumerConfig.setFilter("-sentinel.dubbo.consumer.filter");
-        return consumerConfig;
     }
 }

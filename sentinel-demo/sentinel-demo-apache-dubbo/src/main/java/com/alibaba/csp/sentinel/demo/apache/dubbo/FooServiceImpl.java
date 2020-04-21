@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.alibaba.csp.sentinel.demo.apache.dubbo.provider;
+package com.alibaba.csp.sentinel.demo.apache.dubbo;
 
 import com.alibaba.csp.sentinel.demo.apache.dubbo.FooService;
-import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider.AnotherService;
-import org.apache.dubbo.config.annotation.Reference;
 import org.apache.dubbo.config.annotation.Service;
 
 import java.time.LocalDateTime;
@@ -28,19 +26,8 @@ import java.time.LocalDateTime;
 @Service
 public class FooServiceImpl implements FooService {
 
-//    @Reference(url = "dubbo://127.0.0.1:25759", timeout = 500)
-//    private FooService fooService;
-
-    @Reference(url = "dubbo://127.0.0.1:25759", timeout = 500)
-    private AnotherService anotherService;
-
     @Override
     public String sayHello(String name) {
-//        String debug = fooService.sayHello("debug");
-//        System.out.println(debug);
-//        System.out.println("debug=>" + name);
-
-        System.out.println(anotherService.play(" game"));
         return String.format("Hello, %s at %s", name, LocalDateTime.now());
     }
 
@@ -64,4 +51,9 @@ public class FooServiceImpl implements FooService {
         return "Success";
     }
 
+    public String sayHelloFallback(String name) {
+        String result = "fallback=>" + name;
+        System.out.println(result);
+        return result;
+    }
 }

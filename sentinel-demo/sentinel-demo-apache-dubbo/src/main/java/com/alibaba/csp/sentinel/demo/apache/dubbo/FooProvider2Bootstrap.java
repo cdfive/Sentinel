@@ -16,6 +16,7 @@
 package com.alibaba.csp.sentinel.demo.apache.dubbo;
 
 import com.alibaba.csp.sentinel.demo.apache.dubbo.provider.ProviderConfiguration;
+import com.alibaba.csp.sentinel.demo.apache.dubbo.provider2.provider.ProviderConfiguration2;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -29,7 +30,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  *
  * @author Eric Zhao
  */
-public class FooProviderBootstrap {
+public class FooProvider2Bootstrap {
 
     public static void main(String[] args) {
         // Users don't need to manually call this method.
@@ -38,7 +39,7 @@ public class FooProviderBootstrap {
 
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(ProviderConfiguration.class);
+        context.register(ProviderConfiguration2.class);
         context.refresh();
 
         System.out.println("Service provider is ready");
