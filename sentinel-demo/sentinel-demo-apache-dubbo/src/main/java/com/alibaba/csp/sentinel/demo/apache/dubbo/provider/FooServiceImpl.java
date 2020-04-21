@@ -31,7 +31,7 @@ public class FooServiceImpl implements FooService {
 //    @Reference(url = "dubbo://127.0.0.1:25759", timeout = 500)
 //    private FooService fooService;
 
-    @Reference(url = "dubbo://127.0.0.1:25759", timeout = 500)
+    @Reference(url = "dubbo://127.0.0.1:25759", timeout = 60000)
     private AnotherService anotherService;
 
     @Override
