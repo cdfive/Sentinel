@@ -55,7 +55,7 @@ public class FooConsumerBootstrap {
         FooServiceConsumer service = consumerContext.getBean(FooServiceConsumer.class);
 
         for (int i = 0; i < 1; i++) {
-//        for (int i = 0; i < 100000; i++) {
+//        for (int i = 0; i < 1000000; i++) {
             try {
                 String message = service.sayHello("Eric");
                 System.out.println(i + "Success: " + message);

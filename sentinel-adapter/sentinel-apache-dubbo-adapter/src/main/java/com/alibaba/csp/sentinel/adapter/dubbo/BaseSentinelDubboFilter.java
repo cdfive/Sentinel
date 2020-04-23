@@ -30,35 +30,53 @@ import org.apache.dubbo.rpc.*;
  * @author Zechao Zheng
  */
 
-public abstract class BaseSentinelDubboFilter extends ListenableFilter {
-    public BaseSentinelDubboFilter() {
-        this.listener = new SentinelDubboListener();
+public abstract class BaseSentinelDubboFilter implements Filter, Filter.Listener {
+//public abstract class BaseSentinelDubboFilter extends ListenableFilter {
+//    public BaseSentinelDubboFilter() {
+//        this.listener = new SentinelDubboListener();
+//    }
+
+//    static class SentinelDubboListener implements Listener {
+//
+//        public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+//            onSuccess(appResponse, invoker);
+//        }
+//
+//        //for compatible dubbo 2.7.5 rename onResponse to onMessage
+//        public void onMessage(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+//            onSuccess(appResponse, invoker);
+//        }
+//
+//        private void onSuccess(Result appResponse, Invoker<?> invoker) {
+//            if (DubboConfig.getDubboBizExceptionTraceEnabled()) {
+//                traceAndExit(appResponse.getException(), invoker.getUrl());
+//            } else {
+//                traceAndExit(null, invoker.getUrl());
+//            }
+//        }
+//
+//        @Override
+//        public void onError(Throwable t, Invoker<?> invoker, Invocation invocation) {
+//            traceAndExit(t, invoker.getUrl());
+//        }
+//
+//    }
+
+
+    @Override
+    public Result onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
+        traceAndExit(null, invoker.getUrl());
+        return appResponse;
     }
 
-    static class SentinelDubboListener implements Listener {
+    @Override
+    public void onMessage(Result result, Invoker<?> invoker, Invocation invocation) {
+        traceAndExit(null, invoker.getUrl());
+    }
 
-        public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
-            onSuccess(appResponse, invoker);
-        }
-
-        //for compatible dubbo 2.7.5 rename onResponse to onMessage
-        public void onMessage(Result appResponse, Invoker<?> invoker, Invocation invocation) {
-            onSuccess(appResponse, invoker);
-        }
-
-        private void onSuccess(Result appResponse, Invoker<?> invoker) {
-            if (DubboConfig.getDubboBizExceptionTraceEnabled()) {
-                traceAndExit(appResponse.getException(), invoker.getUrl());
-            } else {
-                traceAndExit(null, invoker.getUrl());
-            }
-        }
-
-        @Override
-        public void onError(Throwable t, Invoker<?> invoker, Invocation invocation) {
-            traceAndExit(t, invoker.getUrl());
-        }
-
+    @Override
+    public void onError(Throwable throwable, Invoker<?> invoker, Invocation invocation) {
+        traceAndExit(throwable, invoker.getUrl());
     }
 
     static void traceAndExit(Throwable throwable, URL url) {

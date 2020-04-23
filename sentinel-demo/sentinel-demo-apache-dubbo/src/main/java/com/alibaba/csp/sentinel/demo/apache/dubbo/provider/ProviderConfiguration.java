@@ -57,6 +57,7 @@ public class ProviderConfiguration {
         ConsumerConfig consumerConfig = new ConsumerConfig();
         // Uncomment below line if you don't want to enable Sentinel for Dubbo service consumers.
         // consumerConfig.setFilter("-sentinel.dubbo.consumer.filter");
+//        consumerConfig.setFilter("-consumercontext");
         return consumerConfig;
     }
 }
