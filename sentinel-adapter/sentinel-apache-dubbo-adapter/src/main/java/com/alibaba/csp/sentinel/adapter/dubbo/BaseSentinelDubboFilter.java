@@ -80,67 +80,67 @@ public abstract class BaseSentinelDubboFilter implements Filter, Filter.Listener
     }
 
     static void traceAndExit(Throwable throwable, URL url) {
-//        Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY);
-//        Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY);
-//        if (methodEntry != null) {
-//            Tracer.traceEntry(throwable, methodEntry);
-//            methodEntry.exit();
-//            RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY);
-//        }
-//        if (interfaceEntry != null) {
-//            Tracer.traceEntry(throwable, interfaceEntry);
-//            interfaceEntry.exit();
-//            RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY);
-//        }
-//
-//        if (CommonConstants.PROVIDER_SIDE.equals(url.getParameter(CommonConstants.SIDE_KEY))) {
-//            ContextUtil.exit();
-//        }
+        Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY);
+        Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY);
+        if (methodEntry != null) {
+            Tracer.traceEntry(throwable, methodEntry);
+            methodEntry.exit();
+            RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY);
+        }
+        if (interfaceEntry != null) {
+            Tracer.traceEntry(throwable, interfaceEntry);
+            interfaceEntry.exit();
+            RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY);
+        }
 
         if (CommonConstants.PROVIDER_SIDE.equals(url.getParameter(CommonConstants.SIDE_KEY))) {
-            Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "provider");
-            Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY+ "provider");
-
-//            String methodResourceName = DubboUtils.getResourceName(invoker, invocation, DubboConfig.getDubboProviderPrefix());
-//            String interfaceResourceName = DubboConfig.getDubboInterfaceGroupAndVersionEnabled() ? invoker.getUrl().getColonSeparatedKey()
-//                    : invoker.getInterface().getName();
-
-//            Entry interfaceEntry = (Entry) RpcContext.getContext().get(interfaceResourceName);
-//            Entry methodEntry = (Entry) RpcContext.getContext().get(methodResourceName);
-
-            if (methodEntry != null) {
-                Tracer.traceEntry(throwable, methodEntry);
-                methodEntry.exit();
-                RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY+ "provider");
-            }
-            if (interfaceEntry != null) {
-                Tracer.traceEntry(throwable, interfaceEntry);
-                interfaceEntry.exit();
-                RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY+ "provider");
-            }
-
             ContextUtil.exit();
         }
 
-        if (CommonConstants.CONSUMER_SIDE.equals(url.getParameter(CommonConstants.SIDE_KEY))) {
-            Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "consumer");
-            Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY + "consumer");
+//        if (CommonConstants.PROVIDER_SIDE.equals(url.getParameter(CommonConstants.SIDE_KEY))) {
+//            Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "provider");
+//            Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY+ "provider");
+//
+////            String methodResourceName = DubboUtils.getResourceName(invoker, invocation, DubboConfig.getDubboProviderPrefix());
+////            String interfaceResourceName = DubboConfig.getDubboInterfaceGroupAndVersionEnabled() ? invoker.getUrl().getColonSeparatedKey()
+////                    : invoker.getInterface().getName();
+//
+////            Entry interfaceEntry = (Entry) RpcContext.getContext().get(interfaceResourceName);
+////            Entry methodEntry = (Entry) RpcContext.getContext().get(methodResourceName);
+//
+//            if (methodEntry != null) {
+//                Tracer.traceEntry(throwable, methodEntry);
+//                methodEntry.exit();
+//                RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY+ "provider");
+//            }
+//            if (interfaceEntry != null) {
+//                Tracer.traceEntry(throwable, interfaceEntry);
+//                interfaceEntry.exit();
+//                RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY+ "provider");
+//            }
+//
+//            ContextUtil.exit();
+//        }
 
-//            String methodResourceName = DubboUtils.getResourceName(invoker, invocation, DubboConfig.getDubboConsumerPrefix());
-//            String interfaceResourceName = DubboConfig.getDubboInterfaceGroupAndVersionEnabled() ? invoker.getUrl().getColonSeparatedKey()
-//                    : invoker.getInterface().getName();
-//            Entry interfaceEntry = (Entry) RpcContext.getContext().get(interfaceResourceName);
-//            Entry methodEntry = (Entry) RpcContext.getContext().get(methodResourceName);
-            if (methodEntry != null) {
-                Tracer.traceEntry(throwable, methodEntry);
-                methodEntry.exit();
-                RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY + "consumer");
-            }
-            if (interfaceEntry != null) {
-                Tracer.traceEntry(throwable, interfaceEntry);
-                interfaceEntry.exit();
-                RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "consumer");
-            }
-        }
+//        if (CommonConstants.CONSUMER_SIDE.equals(url.getParameter(CommonConstants.SIDE_KEY))) {
+//            Entry interfaceEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "consumer");
+//            Entry methodEntry = (Entry) RpcContext.getContext().get(DubboUtils.DUBBO_METHOD_ENTRY_KEY + "consumer");
+//
+////            String methodResourceName = DubboUtils.getResourceName(invoker, invocation, DubboConfig.getDubboConsumerPrefix());
+////            String interfaceResourceName = DubboConfig.getDubboInterfaceGroupAndVersionEnabled() ? invoker.getUrl().getColonSeparatedKey()
+////                    : invoker.getInterface().getName();
+////            Entry interfaceEntry = (Entry) RpcContext.getContext().get(interfaceResourceName);
+////            Entry methodEntry = (Entry) RpcContext.getContext().get(methodResourceName);
+//            if (methodEntry != null) {
+//                Tracer.traceEntry(throwable, methodEntry);
+//                methodEntry.exit();
+//                RpcContext.getContext().remove(DubboUtils.DUBBO_METHOD_ENTRY_KEY + "consumer");
+//            }
+//            if (interfaceEntry != null) {
+//                Tracer.traceEntry(throwable, interfaceEntry);
+//                interfaceEntry.exit();
+//                RpcContext.getContext().remove(DubboUtils.DUBBO_INTERFACE_ENTRY_KEY + "consumer");
+//            }
+//        }
     }
 }
